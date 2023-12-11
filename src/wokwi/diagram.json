@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "author": "Uri Shaked",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-esp32-devkit-v1",
+      "id": "esp",
+      "top": -4.9,
+      "left": 167.8,
+      "attrs": { "env": "micropython-20220117-v1.18" }
+    },
+    { "type": "wokwi-neopixel", "id": "rgb1", "top": 130.9, "left": -1, "attrs": {} },
+    { "type": "wokwi-neopixel", "id": "rgb2", "top": 82.9, "left": -20.2, "attrs": {} },
+    { "type": "wokwi-neopixel", "id": "rgb3", "top": 54.1, "left": -49, "attrs": {} },
+    { "type": "wokwi-neopixel", "id": "rgb4", "top": 25.3, "left": -77.8, "attrs": {} },
+    { "type": "wokwi-neopixel", "id": "rgb5", "top": -3.5, "left": -106.6, "attrs": {} },
+    {
+      "type": "wokwi-buzzer",
+      "id": "bz1",
+      "top": 2.4,
+      "left": 59.4,
+      "attrs": { "volume": "0.1" }
+    }
+  ],
+  "connections": [
+    [ "esp:TX0", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX0", "$serialMonitor:TX", "", [] ],
+    [ "esp:D13", "rgb1:DIN", "green", [ "h0" ] ],
+    [ "rgb1:DOUT", "rgb2:DIN", "green", [ "h0" ] ],
+    [ "esp:GND.2", "rgb1:VSS", "black", [ "h0" ] ],
+    [ "rgb2:VSS", "rgb1:VSS", "green", [ "v0" ] ],
+    [ "rgb1:VDD", "esp:3V3", "green", [ "h0" ] ],
+    [ "rgb1:VDD", "rgb2:VDD", "green", [ "h0" ] ],
+    [ "rgb2:DOUT", "rgb3:DIN", "green", [ "h0" ] ],
+    [ "rgb3:DOUT", "rgb4:DIN", "green", [ "h0" ] ],
+    [ "rgb4:DOUT", "rgb5:DIN", "green", [ "h0" ] ],
+    [ "rgb3:VSS", "rgb2:VSS", "green", [ "v0" ] ],
+    [ "rgb4:VSS", "rgb3:VSS", "green", [ "v0" ] ],
+    [ "rgb5:VSS", "rgb4:VSS", "green", [ "v0" ] ],
+    [ "esp:D12", "bz1:2", "green", [ "h0" ] ],
+    [ "esp:GND.2", "bz1:1", "black", [ "h0" ] ]
+  ],
+  "dependencies": {}
+}
