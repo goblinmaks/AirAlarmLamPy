@@ -1,4 +1,5 @@
 # Ukraine Air Alarm Light on MicroPython
+# https://wokwi.com/projects/383942008295640065
 
 from machine import Pin, Signal
 from neopixel import NeoPixel
@@ -17,13 +18,13 @@ buzzer_pin = Pin(13, Pin.OUT)
 
 pixels = NeoPixel(Pin(12), 5)
 while True:
-  buzzer_pin.value(1)
-  rainbow = rainbow[-1:] + rainbow[:-1]
-  for i in range(5):
-    pixels[i] = test[i]
-  pixels.write()
-  sleep(0.1)
-  buzzer_pin.value(0)
+    buzzer_pin.value(1)
+    rainbow = rainbow[-1:] + rainbow[:-1]
+    for i in range(5):
+        pixels[i] = test[i]
+    pixels.write()
+    sleep(0.1)
+    buzzer_pin.value(0)
 
 onStart()
   
