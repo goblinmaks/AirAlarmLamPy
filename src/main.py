@@ -8,6 +8,10 @@ import ujson as json
 import ure as re
 import usocket as socket
 
+log = logging.getLogger('airAlarmLamp')
+log.level = min(logging.INFO, logging._level)
+
+
 #SSID = "Flower.SHome"
 PASSWORD = "FB:JwJN[J0tY"
 SSID = "Flower"
@@ -43,10 +47,11 @@ button.irq(trigger=machine.Pin.IRQ_RISING, handler=button_callback)
 # Function to connect to WiFi
 def initial_wifi_connect(_ssid, _password):
     try:
+        log.info("Init wifi connection")
         wlan.active(False)
         wlan.active(True)
         wlan.config(txpower=20)
-        print(wlan.scan())
+        log.debug(wlan.scan())
         wlan.connect(_ssid, _password)
         start_time = time.time()
         while not wlan.isconnected():
@@ -54,26 +59,26 @@ def initial_wifi_connect(_ssid, _password):
                 wlan.active(False)
                 return False
             time.sleep(1)
-            print("Connecting to Wi-Fi...")
-        print("IP Address: ", wlan.ifconfig()[0])
+            log.debug("Connecting to Wi-Fi...")
+        log.info("IP Address: {}".format(wlan.ifconfig()[0]))
         return True
     except Exception as e:
         wlan.active(False)
-        print('Error connecting to WiFi:', str(e))
+        log.warning('Error connecting to WiFi:', str(e))
 
 
 def start_ap_mode():
-    print('Started in AP mode')
+    log.info('Started in AP mode')
     ap_id = 'AirAlarmLamp_{}'.format(chip_id)
     ap = network.WLAN(network.AP_IF)
     ap.active(True)
     ap.config(essid=ap_id, dhcp_hostname= ap_id)
-    print("Connect to '{}', IP Address: {}".format(ap_id, ap.ifconfig()[0]))
+    log.info("Connect to '{}', IP Address: {}".format(ap_id, ap.ifconfig()[0]))
 
 async def handle_request(reader, writer):
     # Log client request
     request_line = await reader.readline()
-    print("Client requested:", request_line.decode().strip())
+    log.debug("Client requested: {}".format(request_line.decode().strip()))
 
     # HTML content
     html_content = """<!DOCTYPE html>
@@ -96,29 +101,29 @@ async def handle_request(reader, writer):
     await writer.aclose()
 
 async def web_server():
-    print("web_server start")
+    log.debug("web_server start")
     server = await asyncio.start_server(handle_request, "0.0.0.0", 80)
-    print("Server started at 0.0.0.0:80")
+    log.info("Server started at 0.0.0.0:80")
 
 async def button_handler():
-    print("button_handler start")
+    log.debug("button_handler start")
     while True:
         # Wait for the button event to be set
         await button_event.wait()
-        print("Button pressed!")
+        log.info("Button pressed!")
         # Clear the event for the next button press
         button_event.clear()
 
 
 async def request_handler():
-    print("time_handler start")
+    log.debug("time_handler start")
     while True:
-        print("processing ....")
+        log.debug("processing ....")
         await asyncio.sleep_ms(10000)
 
 
 async def lamp_service():
-    print("lamp service started")
+    log.debug("lamp service started")
     # Start the button handler task
     asyncio.create_task(button_handler())
     asyncio.create_task(request_handler())
@@ -127,7 +132,7 @@ async def lamp_service():
 
 
 def main():
-    print("ESP8266 Chip ID:", chip_id)  
+    log.info("ESP8266 Chip ID: {}".format(chip_id))  
     loop = asyncio.get_event_loop()
     #loop.create_task(button_handler())
     
@@ -144,4 +149,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
