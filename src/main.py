@@ -2,6 +2,7 @@ import machine
 import time
 import network
 import binascii
+import logging
 import uasyncio as asyncio
 import ujson as json
 import ure as re
